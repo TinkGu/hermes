@@ -11,7 +11,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: 'pnpm'
+          cache: 'yarn'
       - run: yarn install
       - name: push message
         run: yarn run tsx ./src/raindrop.ts --webhook=${{ secrets.DINGDINGBOT_WEBHOOK }} --secret=${{ secrets.DINGDINGBOT_SECRET }} --raindropToken=${{ secrets.RAINDROP_TOKEN }}
