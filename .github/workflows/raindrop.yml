@@ -1,5 +1,7 @@
 name: Raindrop Feeds Push
-on: push
+on:
+  schedule:
+    - cron: '0 15 17 ? * MON-FRI'
 
 jobs:
   job1:
