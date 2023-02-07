@@ -4,4 +4,4 @@
 
 # Raindrop
 
-每天定时推送 Raindrop 中的文章
+![](https://imagev2.xmcdn.com/storages/40b1-audiofreehighqps/F6/E7/GKwRIMAHt7yWAADJBQH1D0do.png)
