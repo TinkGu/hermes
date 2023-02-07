@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { AxiosRequestConfig } from 'axios';
 import crypto from 'crypto';
-import { getArg } from './utils';
+import { getArg } from '../../utils';
 
 const raindropToken = getArg('raindropToken');
 const dingdingBotSecret = getArg('secret');
@@ -95,26 +95,21 @@ async function feedsToMessage(feeds: RaindropArticle[]) {
 /** 推送给机器人 */
 async function pushToBot(msg: string) {
   const timestamp = Date.now();
-  const sign = crypto
-    .createHmac('sha256', dingdingBotSecret!)
-    .update(`${timestamp}\n${dingdingBotSecret}`)
-    .digest('base64');
+  const sign = crypto.createHmac('sha256', dingdingBotSecret!).update(`${timestamp}\n${dingdingBotSecret}`).digest('base64');
 
-  await axios.post(
-    `${dingdingBotWebhook}&timestamp=${timestamp}&sign=${sign}`,
-    {
-      msgtype: 'markdown',
-      markdown: {
-        title: '今天的 raindrop 文章推送',
-        text: msg || '',
-      },
-      at: {
-        isAtAll: false,
-      },
-    }
-  );
+  await axios.post(`${dingdingBotWebhook}&timestamp=${timestamp}&sign=${sign}`, {
+    msgtype: 'markdown',
+    markdown: {
+      title: '今天的 raindrop 文章推送',
+      text: msg || '',
+    },
+    at: {
+      isAtAll: false,
+    },
+  });
 }
 
+/** 推送 3 篇文章给机器人 */
 async function pushRaindropReadList() {
   if (!raindropToken || !dingdingBotSecret || !dingdingBotWebhook) {
     throw { message: 'missing args' };
