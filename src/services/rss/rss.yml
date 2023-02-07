@@ -1,0 +1,20 @@
+name: Kick Rss
+on:
+  schedule:
+    - cron: '0 0 * * *'
+    - cron: '0 13 * * *'
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    steps:
+      # 步骤1 拉取仓库代码
+      - uses: actions/checkout@v3
+      # 步骤2 给当前服务器安装node
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'yarn'
+      - run: yarn install
+      - name: push message
+        run: yarn run tsx ./src/services/rss/index.ts --webhook=${{ secrets.DINGDINGBOT_WEBHOOK }} --secret=${{ secrets.DINGDINGBOT_SECRET }} --raindropToken=${{ secrets.RAINDROP_TOKEN }} --rssDbUrl=${{ secrets.RSS_DB_URL }}

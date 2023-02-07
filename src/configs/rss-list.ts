@@ -1,6 +1,6 @@
 export interface RssRule {
   url: string;
-  /** 取 feed 中的哪个字段作为 lastUpdate 的比较值，默认 "lastBuildDate" */
+  /** 取 feed.items[0] 中的哪个字段作为 lastUpdate 的比较值，默认 "pubDate" */
   flag?: string;
   /** 同 flag，函数写法 */
   flagFn?: (feed?: any) => string;
@@ -17,7 +17,4 @@ enum RssLevel {
   weekly = 10,
 }
 
-export const RssList: RssRule[] = [
-  cr('https://rsshub.app/github/starred_repos/TinkGu'),
-  cr('https://rsshub.app/github/starred_repos/TinkGu'),
-];
+export const RssList: RssRule[] = [cr('https://rsshub.app/github/starred_repos/TinkGu'), cr('https://mdhweekly.com/rss.xml')];

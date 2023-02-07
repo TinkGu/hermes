@@ -1,6 +1,9 @@
 import axios from 'axios';
+import axiosRetry from 'axios-retry';
 import { isDeepStrictEqual } from 'util';
 // import { logToFile } from '.';
+
+axiosRetry(axios, { retries: 3, retryDelay: () => 1000, shouldResetTimeout: true });
 
 /**
  * json 对象数据库，暂不考虑事务等复杂特性
@@ -65,7 +68,10 @@ export class JsonDB {
 
   /** 合并操作 */
   merge = (o: Object) => {
-    this.write(() => o);
+    this.write((x) => ({
+      ...x,
+      ...o,
+    }));
   };
 
   /** 保存到远端 */
