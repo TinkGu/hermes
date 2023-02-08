@@ -57,6 +57,9 @@ export function checkRssUpdated({ feed, records }: { feed: RssFeed; records: Rec
 
 /** 获取上次以来更新的文章 */
 function getFeedNewItems(feed: RssFeed, flag: string) {
+  if (!flag) {
+    return [];
+  }
   let res: any[] = [];
   feed.value?.items?.some((item) => {
     const _flag = getFlag(feed, item);
@@ -102,9 +105,9 @@ export async function fetchUpdatedRssFeeds() {
   await db.connect(RssDbUrl);
   const records = db.read();
   const updatedFeeds = feeds.filter((feed) => {
-    const [isUpdated, flag] = checkRssUpdated({ feed, records });
+    const [isUpdated, flag, lastFlag] = checkRssUpdated({ feed, records });
     if (isUpdated) {
-      feed.news = getFeedNewItems(feed, flag!);
+      feed.news = getFeedNewItems(feed, lastFlag!);
       db.merge({ [feed.id]: flag });
     }
     return isUpdated;
