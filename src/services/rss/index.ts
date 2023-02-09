@@ -1,7 +1,6 @@
 import { registerRssWorkflow, kickRssFlow } from '../../utils/rss';
+import { collectRssToInbox } from '../raindrop/collect-rss';
 
-registerRssWorkflow('star', (feeds) => {
-  console.log('走到了这一步');
-});
+registerRssWorkflow('raindrop RSS 自动推送', collectRssToInbox);
 
 kickRssFlow();

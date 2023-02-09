@@ -1,74 +1,23 @@
 import axios from 'axios';
-import type { AxiosRequestConfig } from 'axios';
 import crypto from 'crypto';
 import { getArg } from '../../utils';
+import { COLLECTIONS } from './config';
+import { getRaindrops, RaindropArticle } from './services';
 
-const raindropToken = getArg('raindropToken');
 const dingdingBotSecret = getArg('secret');
 const dingdingBotWebhook = getArg('webhook');
 
-interface RaindropArticle {
-  excerpt: string;
-  note: string;
-  cover: string;
-  tags: string[];
-  _id: number;
-  title: string;
-  link: string;
-  created: string;
-  important: boolean;
-  collectionId: number;
-}
-
-/** 封装 raindrop oauth */
-async function request(opts: AxiosRequestConfig<any> & { log?: boolean }) {
-  try {
-    const res = await axios({
-      ...opts,
-      headers: {
-        Authorization: 'Bearer ' + raindropToken,
-      },
-    });
-    return res.data;
-  } catch (err) {
-    console.error(err);
-    throw err;
-  }
-}
-
-/** 获取 raindrop 的集合 */
-async function getRaindropCollection({ title }: { title: string }) {
-  const data = await request({
-    method: 'get',
-    url: 'https://api.raindrop.io/rest/v1/collections',
-  });
-
-  if (!data?.items?.length) {
-    return null;
-  }
-
-  const collection = data.items.find((x) => x.title === title);
-  return collection;
-}
-
 /** 获取想要的 feeds，目前的规则是前 10 篇中最重要的 3 篇 */
-async function getFeeds(collection: RaindropArticle, { max }: { max: number }) {
-  const data = await request({
-    method: 'get',
-    url: `https://api.raindrop.io/rest/v1/raindrops/${collection._id}`,
-    params: {
-      page: 0,
-      perpage: 10,
-    },
-  });
-  if (!data?.items?.length) {
+async function getFeeds(collection: { _id: number }, { max }: { max: number }) {
+  const data = await getRaindrops({ id: collection._id });
+  if (!data.length) {
     return [];
   }
-  if (data.items.length <= max) {
-    return data.items;
+  if (data.length <= max) {
+    return data;
   }
-  data.items.reverse().sort((a) => (a.important ? -1 : 1));
-  return data.items.slice(0, 3);
+  data.reverse().sort((a) => (a.important ? -1 : 1));
+  return data.slice(0, 3);
 }
 
 /** 把 feeds 转成可读的 md 消息 */
@@ -111,11 +60,10 @@ async function pushToBot(msg: string) {
 
 /** 推送 3 篇文章给机器人 */
 async function pushRaindropReadList() {
-  if (!raindropToken || !dingdingBotSecret || !dingdingBotWebhook) {
+  if (!dingdingBotSecret || !dingdingBotWebhook) {
     throw { message: 'missing args' };
   }
-  const collection = await getRaindropCollection({ title: 'Tomorrow' });
-  const feeds = await getFeeds(collection, { max: 3 });
+  const feeds = await getFeeds({ _id: COLLECTIONS.tomorrow }, { max: 3 });
   const msg = await feedsToMessage(feeds);
   if (msg) {
     console.log(msg);

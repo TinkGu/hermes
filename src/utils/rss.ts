@@ -146,4 +146,6 @@ export async function kickRssFlow() {
       console.error(`task failed: ${task?.name || ''} `, err);
     }
   });
+
+  await Promise.allSettled(innerTasks);
 }
