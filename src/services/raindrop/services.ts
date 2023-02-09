@@ -5,7 +5,7 @@
  */
 import axios from 'axios';
 import type { AxiosRequestConfig } from 'axios';
-import { getArg } from '../../utils';
+import { getArg, logToFile } from '../../utils';
 
 const raindropToken = getArg('raindropToken');
 
@@ -19,6 +19,7 @@ export interface RaindropArticle {
   title: string;
   link: string;
   created: string;
+  lastUpdate: string;
   important: boolean;
   collectionId: number;
 }
@@ -41,6 +42,7 @@ export async function request(opts: AxiosRequestConfig<any> & { log?: boolean })
         Authorization: 'Bearer ' + raindropToken,
       },
     });
+    logToFile(res.data, { name: 'raindrop' });
     return res.data;
   } catch (err) {
     console.error(err);
@@ -59,13 +61,24 @@ export async function getCollection({ id }: { id: number }) {
 }
 
 /** 根据集合 id，获取 raindrop 文章列表 */
-export async function getRaindrops({ id, sortByImportant }: { id: number; sortByImportant?: boolean }) {
+export async function getRaindrops({
+  id,
+  sortByImportant,
+  sort,
+  perpage,
+}: {
+  id: number;
+  sortByImportant?: boolean;
+  sort?: string;
+  perpage?: number;
+}) {
   const data = await request({
     method: 'get',
     url: `https://api.raindrop.io/rest/v1/raindrops/${id}`,
     params: {
       page: 0,
-      perpage: 10,
+      perpage: perpage || 10,
+      sort: sort || '-created',
     },
   });
 
@@ -140,6 +153,20 @@ export async function moveRaindrops({ fromColId, toColId, ids }: { fromColId: nu
     data: {
       ids,
       collection,
+    },
+  });
+}
+
+/** 批量删除 */
+export async function deleteRaindrops({ colId, ids }: { colId: number; ids: number[] }) {
+  if (!ids?.length) {
+    return;
+  }
+  return await request({
+    url: `https://api.raindrop.io/rest/v1/raindrops/${colId}`,
+    method: 'delete',
+    data: {
+      ids,
     },
   });
 }

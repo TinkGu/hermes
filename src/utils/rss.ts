@@ -139,13 +139,14 @@ export async function kickRssFlow() {
     return;
   }
 
+  const ps: any[] = [];
   innerTasks.forEach((task) => {
     try {
-      task.workflow(feeds);
+      ps.push(task.workflow(feeds));
     } catch (err) {
       console.error(`task failed: ${task?.name || ''} `, err);
     }
   });
 
-  await Promise.allSettled(innerTasks);
+  await Promise.allSettled(ps);
 }

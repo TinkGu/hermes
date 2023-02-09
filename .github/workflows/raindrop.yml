@@ -1,7 +1,7 @@
 name: Raindrop Read Reminder
 on:
   schedule:
-    - cron: '30 0 * * 1-5'
+    - cron: '30 0 * * *'
 
 jobs:
   job1:
@@ -16,4 +16,4 @@ jobs:
           cache: 'yarn'
       - run: yarn install
       - name: push message
-        run: yarn run tsx ./src/services/raindrop/push-feeds.ts --webhook=${{ secrets.DINGDINGBOT_WEBHOOK }} --secret=${{ secrets.DINGDINGBOT_SECRET }} --raindropToken=${{ secrets.RAINDROP_TOKEN }}
+        run: yarn run tsx ./src/services/raindrop --webhook=${{ secrets.DINGDINGBOT_WEBHOOK }} --secret=${{ secrets.DINGDINGBOT_SECRET }} --raindropToken=${{ secrets.RAINDROP_TOKEN }}

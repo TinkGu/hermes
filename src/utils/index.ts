@@ -8,6 +8,10 @@ export const getArg = (key: string) => {
 };
 
 export function logToFile(o: any, options?: { name }) {
+  if (process.env.logToFile !== 'yes') {
+    return;
+  }
+
   if (!o) {
     return;
   }
