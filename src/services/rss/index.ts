@@ -1,3 +1,4 @@
+import '../../utils/env';
 import { registerRssWorkflow, kickRssFlow } from '../../utils/rss';
 import { collectRssToInbox } from '../raindrop/collect-rss';
 
