@@ -17,4 +17,4 @@ jobs:
           cache: 'yarn'
       - run: yarn install
       - name: push message
-        run: yarn run tsx ./src/services/rss/index.ts --webhook=${{ secrets.DINGDINGBOT_WEBHOOK }} --secret=${{ secrets.DINGDINGBOT_SECRET }} --raindropToken=${{ secrets.RAINDROP_TOKEN }} --rssDbUrl=${{ secrets.RSS_DB_URL }}
+        run: yarn run tsx ./src/services/rss --webhook=${{ secrets.DINGDINGBOT_WEBHOOK }} --secret=${{ secrets.DINGDINGBOT_SECRET }} --raindropToken=${{ secrets.RAINDROP_TOKEN }} --rssDbUrl=${{ secrets.RSS_DB_URL }}

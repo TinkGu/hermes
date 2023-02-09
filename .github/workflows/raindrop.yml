@@ -1,4 +1,4 @@
-name: Raindrop Feeds Push
+name: Raindrop Read Reminder
 on:
   schedule:
     - cron: '30 0 * * 1-5'
