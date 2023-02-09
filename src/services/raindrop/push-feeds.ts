@@ -16,7 +16,6 @@ async function getFeeds(collection: { _id: number }, { max }: { max: number }) {
   if (data.length <= max) {
     return data;
   }
-  data.reverse().sort((a) => (a.important ? -1 : 1));
   return data.slice(0, 3);
 }
 

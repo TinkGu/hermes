@@ -25,6 +25,7 @@ export interface RaindropArticle {
 
 /** Raindrop 文章新增 结构体 */
 export interface RaindropAddItem {
+  /** 是否触发自动解析 */
   pleaseParse?: boolean;
   tags?: string[];
   link: string;
@@ -58,7 +59,7 @@ export async function getCollection({ id }: { id: number }) {
 }
 
 /** 根据集合 id，获取 raindrop 文章列表 */
-export async function getRaindrops({ id }: { id: number }) {
+export async function getRaindrops({ id, sortByImportant }: { id: number; sortByImportant?: boolean }) {
   const data = await request({
     method: 'get',
     url: `https://api.raindrop.io/rest/v1/raindrops/${id}`,
@@ -68,7 +69,12 @@ export async function getRaindrops({ id }: { id: number }) {
     },
   });
 
-  return data?.items || [];
+  const items = (data?.items || []) as RaindropArticle[];
+  if (sortByImportant !== false) {
+    items.reverse().sort((a) => (a.important ? -1 : 1));
+  }
+
+  return items;
 }
 
 /** 批量新增，限制最多 100 个 */
@@ -79,11 +85,7 @@ export async function rawPostRaindrops(items: RaindropAddItem[], options?: Parti
       ...(options || {}),
     };
     x.pleaseParse = x.pleaseParse === false ? undefined : {};
-    x.collection = x.collectionId
-      ? {
-          $id: x.collectionId,
-        }
-      : undefined;
+    x.collection = x.collectionId ? { $id: x.collectionId } : undefined;
     delete x.collectionId;
     return x;
   });
@@ -124,4 +126,20 @@ export async function postRaindrops(items: RaindropAddItem[], options?: Partial<
   });
 
   await Promise.allSettled(postTask);
+}
+
+/** 批量转移 */
+export async function moveRaindrops({ fromColId, toColId, ids }: { fromColId: number; toColId: number; ids: number[] }) {
+  if (!ids?.length) {
+    return;
+  }
+  const collection = toColId ? { $id: toColId } : undefined;
+  return await request({
+    url: `https://api.raindrop.io/rest/v1/raindrops/${fromColId}`,
+    method: 'put',
+    data: {
+      ids,
+      collection,
+    },
+  });
 }
