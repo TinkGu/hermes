@@ -10,11 +10,13 @@ export async function roamFeedsToTomorrow() {
     if (!first) {
       return;
     }
-    return await moveRaindrops({
+    await moveRaindrops({
       fromColId: COLLECTIONS.inbox,
       toColId: COLLECTIONS.tomorrow,
       ids: [first],
     });
+
+    return '';
   } catch (err) {
     console.error(err);
     // TODO: 失败报警
@@ -36,11 +38,13 @@ export async function roamFeedsToHungup() {
     if (!overdated?.length) {
       return;
     }
-    return await moveRaindrops({
+    await moveRaindrops({
       fromColId: COLLECTIONS.tomorrow,
       toColId: COLLECTIONS.hangup,
       ids: overdated,
     });
+
+    return '';
   } catch (err) {
     console.error(err);
     // TODO: 失败报警
