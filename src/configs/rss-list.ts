@@ -17,4 +17,4 @@ enum RssLevel {
   weekly = 10,
 }
 
-export const RssList: RssRule[] = [cr('https://rsshub.app/github/starred_repos/TinkGu'), cr('https://mdhweekly.com/rss.xml')];
+export const RssList: RssRule[] = [cr('https://mdhweekly.com/rss.xml'), cr('https://rsshub.app/zhihu/zhuanlan/antdx')];
