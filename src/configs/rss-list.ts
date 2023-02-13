@@ -17,4 +17,12 @@ enum RssLevel {
   weekly = 10,
 }
 
-export const RssList: RssRule[] = [cr('https://mdhweekly.com/rss.xml'), cr('https://rsshub.app/zhihu/zhuanlan/antdx')];
+// 支持 RSS 生成的源网站
+// 1. rsshub
+// 2. https://rss.lilydjwg.me/
+
+export const RssList: RssRule[] = [
+  cr('https://mdhweekly.com/rss.xml'),
+  cr('https://rss.lilydjwg.me/zhihuzhuanlan/c_1543658574504751104'),
+  cr('https://tw93.fun/feed.xml'),
+];
