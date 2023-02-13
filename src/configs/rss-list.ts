@@ -1,4 +1,5 @@
 export interface RssRule {
+  id: string;
   url: string;
   /** 取 feed.items[0] 中的哪个字段作为 lastUpdate 的比较值，默认 "pubDate" */
   flag?: string;
@@ -10,7 +11,24 @@ export interface RssRule {
   level?: number;
 }
 
-const cr = (url, options?: Partial<RssRule>) => Object.assign({ url }, options);
+const prune = (s: string) => {
+  let res = s;
+  res = res.split('?')[0];
+  res = res.replace(/https?:\/\//, '');
+  res = res.replace('.xml', '');
+  res = res.replace('rss.lilydjwg.me', 'rlm');
+  res = res.replace('rsshub.app', 'rb');
+  return res;
+};
+
+const cr = (url, options?: Partial<RssRule>) => {
+  const id = prune(url);
+  return {
+    id,
+    url,
+    ...(options || {}),
+  };
+};
 
 enum RssLevel {
   daily = 1000,
@@ -25,4 +43,5 @@ export const RssList: RssRule[] = [
   cr('https://mdhweekly.com/rss.xml'),
   cr('https://rss.lilydjwg.me/zhihuzhuanlan/c_1543658574504751104'),
   cr('https://tw93.fun/feed.xml'),
+  cr('https://rsshub.app/twitter/user/TinkGu/exclude_rts_replies'),
 ];

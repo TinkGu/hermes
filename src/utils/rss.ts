@@ -7,7 +7,7 @@ import { RssList, RssRule } from '../configs/rss-list';
 const RssDbUrl = getArg('rssDbUrl')!;
 
 export interface RssFeed {
-  id: number;
+  id: string;
   value: Output<any>;
   rule: RssRule;
   news: any[];
@@ -91,8 +91,7 @@ export async function fetchUpdatedRssFeeds() {
   const feeds = results
     .map((x, i) => ({
       ...x,
-      // 从 1 开始记录
-      id: i + 1,
+      id: RssList[i]?.id,
       rule: RssList[i],
       news: [],
     }))
