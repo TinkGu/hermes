@@ -36,7 +36,7 @@ async function raindropAction() {
     () => getTodayFeeds(),
     () => roamFeedsToTomorrow(),
     () => roamFeedsToHungup(),
-    () => roamFeedsToTrash(),
+    // () => roamFeedsToTrash(),
   ];
   tasks.forEach((task) => {
     try {
